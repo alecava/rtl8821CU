@@ -4063,23 +4063,31 @@ static sint fill_radiotap_hdr(_adapter *padapter, union recv_frame *precvframe, 
 	hdr_buf[rt_len] = pattrib->phy_info.recv_signal_power;
 	rt_len += 1;
 
-	/* dBm Antenna Noise */
-	rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_DBM_ANTNOISE);
+	
+	tmp_16bit = 0;
+	s8 snr = 0;
+	snr = pattrib->phy_info.rx_snr[0];
 
-	s8 snr = pattrib->phy_info.rx_snr[0];
-	if (snr == 0) {
-		hdr_buf[rt_len] = 0;
-    } else {
-    	hdr_buf[rt_len] = pattrib->phy_info.recv_signal_power - (snr);  
-    }
-	rt_len += 1;
-
-#if 0
-	/* Signal Quality */
-	rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_LOCK_QUALITY);
-	hdr_buf[rt_len] = pattrib->phy_info.signal_quality;
-	rt_len += 1;
-#endif
+	if (snr < 0) {
+		/* Antenna */
+		rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_ANTENNA);
+		hdr_buf[rt_len] = snr; /* pHalData->rf_type; */
+		rt_len += 1;
+	} else if (snr != 0) {
+		s8 noise8 = pattrib->phy_info.recv_signal_power - snr;
+		if (noise8 > 0) { /* if the noise is a positive number, it means that the value overflows */
+			/* Signal Quality: for us is the noise s16 */
+			rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_LOCK_QUALITY);
+			tmp_16bit = pattrib->phy_info.recv_signal_power - snr;
+			memcpy(&hdr_buf[rt_len], &tmp_16bit, 2);
+			rt_len += 2;
+		} else {
+			/* dBm Antenna Noise: for us is the noise s8 */
+			rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_DBM_ANTNOISE);
+			hdr_buf[rt_len] = noise8;  
+			rt_len += 1;
+		}
+    } 
 
 	/* Antenna */
 	//rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_ANTENNA);
