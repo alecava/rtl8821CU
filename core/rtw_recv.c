@@ -4071,23 +4071,25 @@ static sint fill_radiotap_hdr(_adapter *padapter, union recv_frame *precvframe, 
 	if (snr != 0) {
 		/* Signal Quality */
 		rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_LOCK_QUALITY);
-		tmp_16bit |= snr;
+		tmp_16bit |= cpu_to_le16(snr);
 		memcpy(&hdr_buf[rt_len], &tmp_16bit, 2);
 		rt_len += 2;
 	}
 
-	/* Antenna */
-	//rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_ANTENNA);
-	//hdr_buf[rt_len] = 0; /* pHalData->rf_type; */
-	//rt_len += 1;
+	// /* Antenna */
+	// rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_ANTENNA);
+	// hdr_buf[rt_len] = 0; /* pHalData->rf_type; */
+	// rt_len += 1;
 
+	
+#if 0
 	/* RX flags */
 	rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_RX_FLAGS);
-#if 0
 	tmp_16bit = cpu_to_le16(0);
 	memcpy(ptr, &tmp_16bit, 2);
-#endif
 	rt_len += 2;
+#endif
+	
 
 	/* MCS information */
 	if (pattrib->data_rate >= 12 && pattrib->data_rate < 44) {
