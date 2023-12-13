@@ -4063,23 +4063,21 @@ static sint fill_radiotap_hdr(_adapter *padapter, union recv_frame *precvframe, 
 	hdr_buf[rt_len] = pattrib->phy_info.recv_signal_power;
 	rt_len += 1;
 
-	/* dBm Antenna Noise */
-	rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_DBM_ANTNOISE);
-
-	s8 snr = pattrib->phy_info.rx_snr[0];
-	if (snr == 0) {
-		hdr_buf[rt_len] = 0;
-    } else {
-    	hdr_buf[rt_len] = pattrib->phy_info.recv_signal_power - (snr);  
-    }
+	// padding to make wireshark happy
+	hdr_buf[rt_len] = 0;
 	rt_len += 1;
 
-#if 0
-	/* Signal Quality */
-	rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_LOCK_QUALITY);
-	hdr_buf[rt_len] = pattrib->phy_info.signal_quality;
-	rt_len += 1;
-#endif
+	tmp_16bit = 0;
+	s8 snr = 0;
+	snr = pattrib->phy_info.rx_snr[0];
+
+	if (snr != 0) {
+		/* Signal Quality */
+		rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_LOCK_QUALITY);
+		tmp_16bit = snr;
+		memcpy(&hdr_buf[rt_len], &tmp_16bit, 2);
+		rt_len += 2;
+	}
 
 	/* Antenna */
 	//rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_ANTENNA);
@@ -4090,7 +4088,7 @@ static sint fill_radiotap_hdr(_adapter *padapter, union recv_frame *precvframe, 
 	rtap_hdr->it_present |= (1 << IEEE80211_RADIOTAP_RX_FLAGS);
 #if 0
 	tmp_16bit = cpu_to_le16(0);
-	memcpy(ptr, &tmp_16bit, 1);
+	memcpy(ptr, &tmp_16bit, 2);
 #endif
 	rt_len += 2;
 
