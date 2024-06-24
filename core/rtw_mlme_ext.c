@@ -658,6 +658,7 @@ static u8 init_channel_set(_adapter *padapter, u8 ChannelPlan, RT_CHANNEL_INFO *
 				|| (rtw_is_5g_band4(channel_set[chanset_size].ChannelNum)
 					&& rtw_rd_5g_band4_passive(Index5G)) /* band4 passive */
 				|| (rtw_is_dfs_ch(channel_set[chanset_size].ChannelNum)) /* DFS channel(band2, 3) passive */
+				|| (channel_set[chanset_size].ChannelNum == 144) /* Additional check as not considered in the other conditions (and now the ch. 144 is enabled)*/
 			)
 				channel_set[chanset_size].ScanType = SCAN_PASSIVE;
 			else
