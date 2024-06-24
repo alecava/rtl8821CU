@@ -436,7 +436,9 @@ static RT_CHANNEL_PLAN_MAP	RTW_ChannelPlanMap[RTW_CHPLAN_MAX] = {
 };
 
 static RT_CHANNEL_PLAN_MAP RTW_CHANNEL_PLAN_MAP_REALTEK_DEFINE =
-	CHPLAN_ENT(RTW_RD_2G_WORLD,		RTW_RD_5G_FCC1,		TXPWR_LMT_FCC);		/* 0x7F, Realtek Define */
+	CHPLAN_ENT(RTW_RD_2G_GLOBAL,		RTW_RD_5G_WORLD,		TXPWR_LMT_FCC);		/* 0x7F, Realtek Define */
+	/* Changed 2.4Ghz to Global to have channel 14 enabled. */
+	/* Changed 5Ghx to Word to have channel 144 enabled. */
 
 bool rtw_chplan_is_empty(u8 id)
 {
