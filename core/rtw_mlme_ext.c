@@ -294,7 +294,7 @@ static struct ch_list_t RTW_ChannelPlan5G[] = {
 	/* 49, RTW_RD_5G_IC2 */		CH_LIST_ENT(22, 36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 132, 136, 140, 144, 149, 153, 157, 161, 165),
 	/* 50, RTW_RD_5G_ETSI21 */	CH_LIST_ENT(13, 100, 104, 108, 112, 116, 132, 136, 140, 149, 153, 157, 161, 165),
 	/* 51, RTW_RD_5G_FCC18 */	CH_LIST_ENT(8, 100, 104, 108, 112, 116, 132, 136, 140),
-	/* 52, RTW_RD_5G_WORLD */	CH_LIST_ENT(25, 36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 149, 153, 157, 161, 165),
+	/* 52, RTW_RD_5G_WORLD */	CH_LIST_ENT(28, 36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 149, 153, 157, 161, 165, 169, 173, 177),
 	/* 53, RTW_RD_5G_CHILE1 */	CH_LIST_ENT(25, 36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 149, 153, 157, 161, 165),
 	/* 54, RTW_RD_5G_ACMA1 */	CH_LIST_ENT(21, 36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 132, 136, 140, 149, 153, 157, 161, 165),
 	/* 55, RTW_RD_5G_WORLD1 */	CH_LIST_ENT(8, 36, 40, 44, 48, 52, 56, 60, 64),
@@ -658,7 +658,11 @@ static u8 init_channel_set(_adapter *padapter, u8 ChannelPlan, RT_CHANNEL_INFO *
 				|| (rtw_is_5g_band4(channel_set[chanset_size].ChannelNum)
 					&& rtw_rd_5g_band4_passive(Index5G)) /* band4 passive */
 				|| (rtw_is_dfs_ch(channel_set[chanset_size].ChannelNum)) /* DFS channel(band2, 3) passive */
-				|| (channel_set[chanset_size].ChannelNum == 144) /* Additional check as not considered in the other conditions (and now the ch. 144 is enabled)*/
+				/* Additional check on added channels as not considered in the other conditions)*/
+				|| (channel_set[chanset_size].ChannelNum == 144)
+				|| (channel_set[chanset_size].ChannelNum == 169)
+				|| (channel_set[chanset_size].ChannelNum == 173)
+				|| (channel_set[chanset_size].ChannelNum == 177)
 			)
 				channel_set[chanset_size].ScanType = SCAN_PASSIVE;
 			else
