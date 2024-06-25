@@ -436,7 +436,9 @@ static RT_CHANNEL_PLAN_MAP	RTW_ChannelPlanMap[RTW_CHPLAN_MAX] = {
 };
 
 static RT_CHANNEL_PLAN_MAP RTW_CHANNEL_PLAN_MAP_REALTEK_DEFINE =
-	CHPLAN_ENT(RTW_RD_2G_WORLD,		RTW_RD_5G_FCC1,		TXPWR_LMT_FCC);		/* 0x7F, Realtek Define */
+	CHPLAN_ENT(RTW_RD_2G_GLOBAL,		RTW_RD_5G_WORLD,		TXPWR_LMT_FCC);		/* 0x7F, Realtek Define */
+	/* Changed 2.4Ghz to Global to have channel 14 enabled. */
+	/* Changed 5Ghx to Word to have channel 144 enabled. */
 
 bool rtw_chplan_is_empty(u8 id)
 {
@@ -656,6 +658,7 @@ static u8 init_channel_set(_adapter *padapter, u8 ChannelPlan, RT_CHANNEL_INFO *
 				|| (rtw_is_5g_band4(channel_set[chanset_size].ChannelNum)
 					&& rtw_rd_5g_band4_passive(Index5G)) /* band4 passive */
 				|| (rtw_is_dfs_ch(channel_set[chanset_size].ChannelNum)) /* DFS channel(band2, 3) passive */
+				|| (channel_set[chanset_size].ChannelNum == 144) /* Additional check as not considered in the other conditions (and now the ch. 144 is enabled)*/
 			)
 				channel_set[chanset_size].ScanType = SCAN_PASSIVE;
 			else
